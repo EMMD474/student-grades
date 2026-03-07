@@ -58,4 +58,36 @@ paths:
                   $ref: '#/components/schemas/Student'
           404:
             description: Student not found
-      
+
+components:
+  schemas:
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        subject:
+          type: string
+        grade:
+          type: integer
+      required:
+        - id
+        - name
+        - subject
+        - grade
+    NewStudent:
+      type: object
+      properties:
+        name:
+          type: string
+        subject:
+          type: string
+        grade:
+          type: integer
+      required:
+        - name
+        - subject
+        - grade
+        
