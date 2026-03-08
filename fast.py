@@ -50,6 +50,9 @@ class StudentRepsonse(BaseModel):
     name: str
     grades: List[GradeResponse]
 
+class StudentsListResponse(BaseModel):
+    students: List[StudentResponse]
+
 class StudentOnlyResponse(BaseModel):
     id: int
     name: str
@@ -74,7 +77,7 @@ def format_student(student: dict) -> dict:
 async def root():
     return {"message": "Welcome to the Student Grades API!"}
 
-@app.get("/students", response_model=dict)
+@app.get("/students", response_model=StudentsListResponse)
 def get_students():
     formatted_students = [format_student(student) for student in students]
     return {"students": formatted_students}
@@ -86,7 +89,7 @@ def get_student(student_id: int):
     for student in students:
         if student["id"] == student_id:
             return format_student(student)
-            
+
     raise HTTPException(status_code=404, detail="Student not found")
 
 
