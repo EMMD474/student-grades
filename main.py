@@ -131,5 +131,30 @@ def add_student_grade():
 
     return jsonify(new_grade), 201
 
+# edit grade
+@app.route("/student-grades/<int:student_id>", methods=["PUT"])
+def edit_grade(student_id):
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    valid, message = validate_grade(data)
+    if not valid: 
+        return jsonify({"error": message}), 400
+
+    student_exists = any(student["id"] == data["student_id"] for student in students)
+    if not student_exists:
+        return jsonify({"error": "Student not found"}), 404
+
+    new_grade = {
+        "student_id": data["student_id"],
+        "subject": data['subject'],
+        "grade": data["grade"] 
+    }
+
+    student_grades.append(new_grade)
+
+    return jsonify(new_grade), 201
+
 if __name__ == "__main__":
     app.run(debug=True)
