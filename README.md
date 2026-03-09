@@ -1,49 +1,85 @@
 # Student Grades API
 
-A simple REST API built with Flask for managing students and their academic grades.
+Simple REST API project for managing students and grades, with two implementations:
 
-## Features
+- Flask app in `main.py`
+- FastAPI app in `fast.py`
 
-- **Welcome Message**: Basic sanity check at the root endpoint.
-- **Student Management**: Create and retrieve student profiles.
-- **Grade Tracking**: Add and associate grades with specific students.
-- **In-Memory Storage**: Current implementation uses volatile memory for data persistence.
+Data is stored in memory, so all changes reset when the server restarts.
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+- Python 3.10+
+- `pip`
 
-- Python 3.x
-- Flask
+## Setup
 
-### Setup
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install flask fastapi "uvicorn[standard]" pydantic
+```
 
-1.  **Virtual Environment**: Activate the pre-configured virtual environment.
+## Run The API
 
-    ```bash
-    source .venv/bin/activate
-    ```
+### Flask (`main.py`)
 
-2.  **Run the Server**: Use the provided shell script to start the Flask application in debug mode.
-    ```bash
-    ./run.sh
-    ```
-    The server will be available at `http://localhost:5000`.
+```bash
+source .venv/bin/activate
+flask --app main --debug run
+```
 
-## API Documentation
+Default URL: `http://127.0.0.1:5000`
 
-The API's endpoints and data structures are fully documented using the OpenAPI 3.0.3 specification in [openapi.yaml](file:///home/emmd/Workstation/school/student-grades/openapi.yaml).
+### FastAPI (`fast.py`)
 
-### Summary of Endpoints
+```bash
+source .venv/bin/activate
+uvicorn fast:app --reload
+```
 
-- `GET /`: Welcome message.
-- `GET /students`: List all students and their recorded grades.
-- `POST /students`: Create a new student (Requires: `name`).
-- `GET /students/{id}`: Detailed view of a single student.
-- `POST /student-grades`: Add a grade for a student (Requires: `student_id`, `subject`, `grade`).
+Default URL: `http://127.0.0.1:8000`
+
+## Endpoints
+
+Common routes in both implementations:
+
+- `GET /` - Welcome message.
+- `GET /students` - List students.
+- `GET /students/{student_id}` - Fetch a single student.
+- `POST /students` - Create a student.
+- `POST /student-grades` - Add a grade for a student.
+
+Flask-only route:
+
+- `PUT /student-grades/{student_id}`
+
+## Example Requests
+
+Create a student:
+
+```bash
+curl -X POST http://127.0.0.1:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice"}'
+```
+
+Add a grade:
+
+```bash
+curl -X POST http://127.0.0.1:5000/student-grades \
+  -H "Content-Type: application/json" \
+  -d '{"student_id":1,"subject":"Math","grade":92}'
+```
+
+## API Spec
+
+OpenAPI spec file: [`openapi.yaml`](./openapi.yaml)
 
 ## Project Structure
 
-- `main.py`: The core Flask application logic.
-- `openapi.yaml`: API documentation and schema definitions.
-- `run.sh`: Helper script for environment setup and server execution.
+- `main.py` - Flask implementation.
+- `fast.py` - FastAPI implementation.
+- `openapi.yaml` - OpenAPI 3.0 spec.
+- `run.sh` - Flask helper script (currently references `test.py`; use the command above).
+- `run_fast.sh` - FastAPI helper script.
